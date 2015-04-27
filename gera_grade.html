@@ -1,0 +1,46 @@
+<html>
+	<head>
+		<script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+		<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+
+	</head>
+	<body>
+		<h2>Gera Grade</h2>
+		Prefixo: <input id="prefixo" type="text" /> <br />
+		De: <input id="de" type="text" /> Até: <input id="ate" type="text" /> <br/>
+		<button id="gerar-button" style="width: 50px;">Gerar</button><button id="limpar-button" style="width: 50px;">Limpar</button>
+		<div id="resposta"></div>
+
+		<script>
+			 $( document ).ready(function() {
+			 	var resposta = "";
+
+			    $('#gerar-button').click(function(e) {
+			    	var prefixo = $('#prefixo').val();
+			    	
+			    	var de = parseInt( $('#de').val() );
+			    	var ate = parseInt( $('#ate').val() );
+
+			    	for (i = de; i <= ate; i++) {
+			    		resposta += "," + prefixo + "" + i;
+			    	}
+
+			    	$('#resposta').html(resposta);
+			    	
+			    	prefixo = prefixo - 1;
+			    	if ( prefixo < 10 ) {
+			    		$('#prefixo').val( '00' + prefixo );
+			    	} else {
+			    		$('#prefixo').val(prefixo);
+			    	}
+			    	$('#de').focus();
+			    });
+			 
+			 	$('#limpar-button').click(function(e) {
+			 		resposta = '';
+			 		$('#resposta').html('');
+			 	});
+			});
+    	</script>
+	</body>
+</html>
