@@ -1,0 +1,51 @@
+% $ biblatex auxiliary file $
+% $ biblatex version 2.3 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated as
+% required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+\entry{dasgupta}{book}{}
+  \name{author}{3}{}{%
+    {{}%
+     {Dasgupta}{D.}%
+     {S.}{S.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Papadimitriou}{P.}%
+     {C.~H.}{C.~H.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Vazirani}{V.}%
+     {U.~V.}{U.~V.}%
+     {}{}%
+     {}{}}%
+  }
+  \list{publisher}{1}{%
+    {McGraw-Hill Science/Engineering/Math}%
+  }
+  \strng{namehash}{DSPCHVUV1}
+  \strng{fullhash}{DSPCHVUV1}
+  \field{edition}{1st}
+  \field{isbn}{978-0073523408}
+  \field{title}{Algorithms}
+  \field{year}{2006}
+\endentry
+
+\lossort
+\endlossort
+
+\endinput

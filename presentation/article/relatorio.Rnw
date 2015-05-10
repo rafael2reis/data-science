@@ -1,0 +1,32 @@
+\documentclass{article}
+\usepackage[portuguese]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+\begin{document}
+\SweaveOpts{concordance=TRUE}
+
+\section{Data Sets}
+
+Os dados utilizados na análise foram extraídos do PRODES, TerraClass e do Global Forest Watch (GFW), com as especificações técnicas apresentadas abaixo:
+
+\begin{tabular}{|l|l|c|l|}
+\hline
+Origem & Tipo de & Sensor & Resolução \\
+ & Satélite & & \\
+\hline
+PRODES & Landsat 5 & TM & 20 a 30m \\
+\hline
+TerraClass & Landsat 5 & TM & 20 a 30m \\
+\hline
+GFW & Landsat 7 & ETM+ & 30 x 30m \\
+\hline
+\end{tabular}
+
+\subsection{O Data Set Tree Cover Gain}
+
+O portal Global Forest Watch disponibiliza uma variedade de dados ??? O conjunto utilizado neste estudo foi o \emph{Tree Cover Gain}. Como informado na documentação dos dados, \emph{tree cover} é definido como toda vegetação com altura maior do que 5 metros. É ainda a presença biofísica de árvores, podendo ser florestas naturais ou plantações ???existing over a range of canopy???
+
+Para a geração dos dados, mais de 600 mil imagens do Landsat 7 foram compiladas e analisadas utilizando uma plataforma na nuvem chamada Google Earth Engine. As observações limpas da superfície (30 por 30 metro por pixel) das imagens de satélite foram reunidas e um algoritmo de aprendizado supervisionado foi aplicado para identificar o tree cover gain por pixel.
+
+\end{document}
