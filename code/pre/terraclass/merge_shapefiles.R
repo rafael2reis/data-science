@@ -2,9 +2,9 @@ rm(list = ls())
 
 library(rgdal); library(maptools); library(parallel)
 
-source("read_shapefile.R")
+source("code/pre/terraclass/read_shapefile.R")
 
-estados.2012 <- read.table('terraclass_arquivos_2012_teste.csv', colClasses = "character")
+estados.2012 <- read.table('data/input/terraclass/terraclass_arquivos_2012_teste.csv', colClasses = "character")
 poly.data <- NULL
 uid <- 1
 
@@ -55,7 +55,14 @@ for (i in 1:nrow(estados.2012)) {
     }
   }
   
-  writeOGR(poly.data, dsn = 'new', layer = paste('TC_2012_VS_', estado, '_merge', sep = ''), driver = 'ESRI Shapefile')
+  wd <- getwd()
+  setwd('data/output/terraclass')
+  
+  writeOGR(poly.data, dsn = '2012', layer = paste('TC_2012_VS_', estado, sep = ''), driver = 'ESRI Shapefile')
+  
+  setwd(wd)
+  
   rm(poly.data)
   rm(temp.data)
+  gc()
 }
