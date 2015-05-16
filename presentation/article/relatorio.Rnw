@@ -2,9 +2,17 @@
 \usepackage[portuguese]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
+\usepackage[backend=bibtex, sorting=none]{biblatex}
+\bibliography{references}
 
 \begin{document}
 \SweaveOpts{concordance=TRUE}
+
+<<setup, include=FALSE, cache=FALSE, echo=FALSE>>=
+Sys.setenv(TEXINPUTS=getwd(),
+           BIBINPUTS=getwd(),
+           BSTINPUTS=getwd())
+@
 
 \section{Data Sets}
 
@@ -27,6 +35,8 @@ GFW & Landsat 7 & ETM+ & 30 x 30m \\
 
 O portal Global Forest Watch disponibiliza uma variedade de dados ??? O conjunto utilizado neste estudo foi o \emph{Tree Cover Gain}. Como informado na documentação dos dados, \emph{tree cover} é definido como toda vegetação com altura maior do que 5 metros. É ainda a presença biofísica de árvores, podendo ser florestas naturais ou plantações ???existing over a range of canopy???
 
-Para a geração dos dados, mais de 600 mil imagens do Landsat 7 foram compiladas e analisadas utilizando uma plataforma na nuvem chamada Google Earth Engine. As observações limpas da superfície (30 por 30 metro por pixel) das imagens de satélite foram reunidas e um algoritmo de aprendizado supervisionado foi aplicado para identificar o tree cover gain por pixel.
+Para a geração dos dados, mais de 600 mil imagens do Landsat 7 foram compiladas e analisadas utilizando uma plataforma na nuvem chamada Google Earth Engine. As observações limpas da superfície (30 por 30 metro por pixel) das imagens de satélite foram reunidas e um algoritmo de aprendizado supervisionado foi aplicado para identificar o tree cover gain por pixel. \cite{dasgupta}
+
+\printbibliography
 
 \end{document}
