@@ -1,7 +1,22 @@
-ReadShapefile <- function (ano = NULL, orbitaPonto = NULL, estado = NULL) {
-  estadoMap <- list(AC = 'ACRE', AM = 'AMAZONAS', RR = 'RORAIMA', 
-                    RO = 'RONDONIA', PA = 'PARA', AP = 'AMAPA',
-                    MT = 'MATO_GROSSO', TO = 'TOCANTINS', MA = 'MARANHAO')
+GetUrlTerraclass <- function(ano, estado, orbitaPonto) {
+  if (ano == '2012') {
+    estadoMap <- list(AC = 'ACRE', AM = 'AMAZONAS', RR = 'RORAIMA', 
+                      RO = 'RONDONIA', PA = 'PARA', AP = 'AMAPA',
+                      MT = 'MATO_GROSSO', TO = 'TOCANTINS', MA = 'MARANHAO')
+    
+    arquivo.url <- paste0("http://www.inpe.br/cra/projetos_pesquisas/", ano, "/Dados_TC", ano, "/", 
+                          estadoMap[[estado]],"_2012/TC_", estado,"_", ano,"_", 
+                          orbitaPonto,".zip")
+  } else if (ano == '2010') {
+    arquivo.url <- paste0("http://www.inpe.br/cra/projetos_pesquisas/", ano, "/Dados_TC", ano, "/", 
+                          estado,"/TC_", estado,"_", ano,"_", 
+                          orbitaPonto,".zip")
+  }
+  
+  return(arquivo.url)
+}
+
+ReadShapefile <- function (ano = NULL, estado = NULL, orbitaPonto = NULL) {
   
   #######-TESTE
   #ano <- '2012'
@@ -9,12 +24,7 @@ ReadShapefile <- function (ano = NULL, orbitaPonto = NULL, estado = NULL) {
   #estado <- 'AM'
   ######
   
-  arquivo.url <- NULL
-  if (ano == '2012') {
-    arquivo.url <- paste0("http://www.inpe.br/cra/projetos_pesquisas/", ano, "/Dados_TC", ano, "/", 
-                         estadoMap[[estado]],"_2012/TC_", estado,"_", ano,"_", 
-                         orbitaPonto,".zip")
-  }
+  arquivo.url <- GetUrlTerraclass(ano = ano, estado = estado, orbitaPonto = orbitaPonto)
   
   wdir <- getwd()
   setwd('data/input/temp')

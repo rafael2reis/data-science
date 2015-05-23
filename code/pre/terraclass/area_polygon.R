@@ -1,4 +1,4 @@
-areaPolygons<- function(spPoly, proj4string = NULL) { 
+AreaPolygons<- function(spPoly, proj4string = NULL) { 
   if(class(spPoly)[[1]] != "SpatialPolygonsDataFrame"& 
        class(spPoly)[[1]] != "SpatialPolygons") { 
     stop("spPoly must be a SpatialPolygonsDataFrame or a 
