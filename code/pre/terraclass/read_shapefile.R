@@ -11,6 +11,12 @@ GetUrlTerraclass <- function(ano, estado, orbitaPonto) {
     arquivo.url <- paste0("http://www.inpe.br/cra/projetos_pesquisas/", ano, "/Dados_TC", ano, "/", 
                           estado,"/TC_", estado,"_", ano,"_", 
                           orbitaPonto,".zip")
+  } else if (ano == '2008') {
+    estadoMap <- list(AC = 'ACRE', AM = 'AMAZONAS', RR = 'RORAIMA', 
+                      RO = 'RONDONIA', PA = 'PARA', AP = 'AMAPA',
+                      MT = 'MATO_GROSSO', TO = 'TOCANTINS', MA = 'MARANHAO')
+    arquivo.url <- paste0("http://www.inpe.br/cra/projetos_pesquisas/2008/dados_terraclass/", 
+                          estadoMap[[estado]], "/", orbitaPonto, "/", orbitaPonto,"_2008_shp.zip")
   }
   
   return(arquivo.url)
@@ -37,15 +43,20 @@ ReadShapefile <- function (ano = NULL, estado = NULL, orbitaPonto = NULL) {
     
     unzip("dest.zip")
     
-    nome.arquivo <- paste("TC_", estado, "_", ano, "_", orbitaPonto, sep = "")
+    if (ano == '2008') {
+      nome.arquivo <- paste0("terraclass_2008_", orbitaPonto)
+      nome.dir <- paste0(orbitaPonto, "_2008_shp")
+    } else {
+      nome.arquivo <- paste("TC_", estado, "_", ano, "_", orbitaPonto, sep = "")
+      nome.dir <- nome.arquivo
+    }
     print(nome.arquivo)
-   
+    
     #alguns arquivos são unzipados com diretório
-    nome.dir <- nome.arquivo
     isDir <- file.info( nome.dir )$isdir
     if ( !is.na(isDir) && isDir ) {
       
-      terra.class <- readOGR(dsn = nome.arquivo, layer = paste(nome.arquivo,"__pol", sep = "") )
+      terra.class <- readOGR(dsn = nome.dir, layer = paste(nome.arquivo,"__pol", sep = "") )
       
     } else {
       # work-around por causa do bug do unzip()
