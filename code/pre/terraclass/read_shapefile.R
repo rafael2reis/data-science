@@ -1,22 +1,28 @@
+estadosMap.2012 <- list(AC = "ACRE", AM = "AM", RR = "RR", 
+     RO = "RO", PA = "PA", AP = "AP",
+     MT = "MT", TO = "TO", MA = "MA")
+
+estadosMap <- list(AC = "ACRE", AM = "AMAZONAS", RR = "RORAIMA", 
+              RO = "RONDONIA", PA = "PARA", AP = "AMAPA",
+              MT = "MATO_GROSSO", TO = "TOCANTINS", MA = "MARANHAO")
+
 GetUrlTerraclass <- function(ano, estado, orbitaPonto) {
-  if (ano == '2012') {
-    estadoMap <- list(AC = 'ACRE', AM = 'AMAZONAS', RR = 'RORAIMA', 
-                      RO = 'RONDONIA', PA = 'PARA', AP = 'AMAPA',
-                      MT = 'MATO_GROSSO', TO = 'TOCANTINS', MA = 'MARANHAO')
+  if (ano == "2012") {
+    arquivo.url <- paste0("http://www.inpe.br/cra/projetos_pesquisas/", ano, "/Dados_TC", ano, "/", 
+                          estadosMap[[estado]], "_2012/TC_", estado,"_", ano, "_", 
+                          orbitaPonto, ".zip")
+  } else if (ano == "2010") {
+    nome.zip <- paste0("TC_", estado, "_2010_", orbitaPonto, ".zip");
+    if (estado == "MT" 
+            && (orbitaPonto == "22869" || orbitaPonto == "22771" || orbitaPonto == "22772")) {
+      nome.zip <- paste0("TC_2010_MT_", orbitaPonto, ".zip");
+    }
     
     arquivo.url <- paste0("http://www.inpe.br/cra/projetos_pesquisas/", ano, "/Dados_TC", ano, "/", 
-                          estadoMap[[estado]],"_2012/TC_", estado,"_", ano,"_", 
-                          orbitaPonto,".zip")
-  } else if (ano == '2010') {
-    arquivo.url <- paste0("http://www.inpe.br/cra/projetos_pesquisas/", ano, "/Dados_TC", ano, "/", 
-                          estado,"/TC_", estado,"_", ano,"_", 
-                          orbitaPonto,".zip")
-  } else if (ano == '2008') {
-    estadoMap <- list(AC = 'ACRE', AM = 'AMAZONAS', RR = 'RORAIMA', 
-                      RO = 'RONDONIA', PA = 'PARA', AP = 'AMAPA',
-                      MT = 'MATO_GROSSO', TO = 'TOCANTINS', MA = 'MARANHAO')
+                          estado, "/", nome.zip)
+  } else if (ano == "2008") {
     arquivo.url <- paste0("http://www.inpe.br/cra/projetos_pesquisas/2008/dados_terraclass/", 
-                          estadoMap[[estado]], "/", orbitaPonto, "/", orbitaPonto,"_2008_shp.zip")
+                          estadosMap[[estado]], "/", orbitaPonto, "/", orbitaPonto, "_2008_shp.zip")
   }
   
   return(arquivo.url)
@@ -25,15 +31,15 @@ GetUrlTerraclass <- function(ano, estado, orbitaPonto) {
 ReadShapefile <- function (ano = NULL, estado = NULL, orbitaPonto = NULL) {
   
   #######-TESTE
-  #ano <- '2012'
-  #orbitaPonto <- '00163'
-  #estado <- 'AM'
+  #ano <- "2012"
+  #orbitaPonto <- "00665"
+  #estado <- "AC"
   ######
   
   arquivo.url <- GetUrlTerraclass(ano = ano, estado = estado, orbitaPonto = orbitaPonto)
   
   wdir <- getwd()
-  setwd('data/input/temp')
+  setwd("data/input/temp")
   
   tryCatch({
     download.file(arquivo.url, 
@@ -43,11 +49,14 @@ ReadShapefile <- function (ano = NULL, estado = NULL, orbitaPonto = NULL) {
     
     unzip("dest.zip")
     
-    if (ano == '2008') {
+    if (ano == "2008") {
       nome.arquivo <- paste0("terraclass_2008_", orbitaPonto)
       nome.dir <- paste0(orbitaPonto, "_2008_shp")
+    } else if (ano == "2012") {
+      nome.dir <- paste0("TC_", estado, "_", ano, "_", orbitaPonto)
+      nome.arquivo <- paste0("TC_", estadosMap.2012[[estado]], "_", ano, "_", orbitaPonto)
     } else {
-      nome.arquivo <- paste("TC_", estado, "_", ano, "_", orbitaPonto, sep = "")
+      nome.arquivo <- paste0("TC_", estado, "_", ano, "_", orbitaPonto)
       nome.dir <- nome.arquivo
     }
     print(nome.arquivo)
@@ -64,7 +73,7 @@ ReadShapefile <- function (ano = NULL, estado = NULL, orbitaPonto = NULL) {
       novos.arquivos <- sub(".+\\\\", "", arquivos)
       file.rename(arquivos, novos.arquivos)
       
-      terra.class <- readOGR(dsn = ".", layer = paste(nome.arquivo,"__pol", sep = "") )
+      terra.class <- readOGR(dsn = ".", layer = paste(nome.arquivo, "__pol", sep = "") )
     }
     
     return(terra.class)

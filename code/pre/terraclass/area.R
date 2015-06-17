@@ -1,6 +1,7 @@
-CalculateArea <- function (ano = ano) {
-  estados <- c('AC', 'AP', 'AM', 'MA', 'MT', 'PA', 'RO', 'RR', 'TO')
-  #estados <- c('MT')
+CalculateArea <- function (ano = NULL, estados = NULL, prefix = 'SV') {
+  if ( is.null(estados) ) {
+    estados <- c('AC', 'AP', 'AM', 'MA', 'MT', 'PA', 'RO', 'RR', 'TO')
+  }
   
   wd.base <- getwd()
   source('code/pre/terraclass/area_polygon.R')
@@ -11,7 +12,7 @@ CalculateArea <- function (ano = ano) {
   
   for (i in 1:length(estados)) {
     estado <- estados[[i]]
-    arquivos <- list.files(path = ano, pattern = paste0('.+', estado, '.+shp$'))
+    arquivos <- list.files(path = ano, pattern = paste0('.+', prefix, '_', estado, '.+shp$'))
     arquivos <- substr(arquivos, start = 1, stop = (nchar(arquivos) - 4))
     
     area.sum <- 0
@@ -30,7 +31,7 @@ CalculateArea <- function (ano = ano) {
     print( paste(estado, ano, area.sum) )
     nova.linha <- list(estado, ano, area.sum)
     
-    write.table( x = nova.linha, file = paste0(wd.base, '/data/output/terraclass/terraclass_vs_', ano, '.txt'), 
+    write.table( x = nova.linha, file = paste0(wd.base, '/data/output/terraclass/terraclass_', prefix, '_', ano, '.txt'), 
                  row.names = FALSE, col.names = FALSE, append = TRUE)
   }
   

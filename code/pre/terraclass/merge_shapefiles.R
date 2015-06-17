@@ -1,20 +1,21 @@
-# Create Secundary Vegetation Shapefiles
-CreateSvShapes <- function (ano = ano) {
+# Create TerraClass Shapefiles
+# Default is Secondary Vegetation
+CreateTerraClassShapes <- function (ano = NULL, classe = 'VEGETACAO_SECUNDARIA', sufix = "SV") {
   source("code/pre/terraclass/read_shapefile.R")
   
   estados <- read.table('data/input/terraclass/terraclass_arquivos.csv', colClasses = "character")
   poly.data <- NULL
   uid <- 1
   
-  ExisteVegetacaoSecundaria <- function(shape, ano) {
+  ExisteClasse <- function(shape, ano, classe) {
     if (ano == '2012') {
-      existe <- shape$tc_2012 == 'VEGETACAO_SECUNDARIA'
+      existe <- shape$tc_2012 == classe
     } else if (ano == '2010') {
-      existe <- shape$tc_2010 == 'VEGETACAO_SECUNDARIA'
+      existe <- shape$tc_2010 == classe
     } else if (ano == '2008') {
-      existe <- shape$tcclasse == 'VEGETACAO_SECUNDARIA'
+      existe <- shape$tcclasse == classe
     } else {
-      print( paste('Não existem dados disponíveis para o ano', ano) )
+      print( paste('Não existem dados de', classe, 'disponíveis para o ano', ano) )
     }
     
     return(existe)
@@ -25,13 +26,13 @@ CreateSvShapes <- function (ano = ano) {
     orbitas.ponto <- unlist(strsplit(estados[i, 2], "[,]"))
     
     leu.primeiro <- FALSE
-    for(j in 1:length(orbitas.ponto)) {
+    for(j in 2:length(orbitas.ponto)) {
       if (!leu.primeiro) {
         
         poly.data <- ReadShapefile(ano = ano, estado = estado, orbitaPonto = orbitas.ponto[j])
     
         if (length(poly.data) > 0) {
-          existe <- ExisteVegetacaoSecundaria(shape = poly.data, ano = ano)
+          existe <- ExisteClasse(shape = poly.data, ano = ano, classe = classe)
           
           if (any(existe)) {
             poly.data <- poly.data[existe, ]
@@ -45,7 +46,7 @@ CreateSvShapes <- function (ano = ano) {
         temp.data <- ReadShapefile(ano = ano, estado = estado, orbitaPonto = orbitas.ponto[j])
         
         if (length(temp.data) > 0) {
-          existe <- ExisteVegetacaoSecundaria(shape = temp.data, ano = ano)
+          existe <- ExisteClasse(shape = temp.data, ano = ano, classe = classe)
           
           if (any(existe)) {
             temp.data <- temp.data[existe, ]  
@@ -59,7 +60,7 @@ CreateSvShapes <- function (ano = ano) {
               wd <- getwd()
               setwd('data/output/terraclass')
               
-              writeOGR(poly.data, dsn = ano, layer = paste('TC_', ano, '_VS_', estado, '_merge_', j, sep = ''), driver = 'ESRI Shapefile')
+              writeOGR(poly.data, dsn = ano, layer = paste('TC_', ano, '_', sufix,'_', estado, '_', j, sep = ''), driver = 'ESRI Shapefile')
               
               setwd(wd)
               
@@ -77,9 +78,17 @@ CreateSvShapes <- function (ano = ano) {
     wd <- getwd()
     setwd('data/output/terraclass')
     
-    nome.arquivo <- paste0('TC_', ano, '_VS_', estado)
+    nome.arquivo <- paste0('TC_', ano, '_', sufix,'_', estado)
     if (estado == 'PA') {
-      nome.arquivo <- paste0('TC_', ano, '_VS_', estado, '_merge_', j)
+      nome.arquivo <- paste0('TC_', ano, '_', sufix, '_', estado, '_', j)
+    }
+    arquivo.shp <- paste0(ano, '/', nome.arquivo, '.shp')
+    if (file.exists( arquivo.shp )) {
+      arquivos <- c( paste0(ano, '/', nome.arquivo, '.dbf'),
+                     paste0(ano, '/', nome.arquivo, '.prj'),
+                     paste0(ano, '/', nome.arquivo, '.shp'),
+                     paste0(ano, '/', nome.arquivo, '.shx'))
+      file.remove(arquivos)
     }
     writeOGR(poly.data, dsn = ano, layer = nome.arquivo, driver = 'ESRI Shapefile')
     
