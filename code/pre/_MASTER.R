@@ -21,6 +21,13 @@ DownloadProdesFiles(ano = '2008')
 DownloadProdesFiles(ano = '2010')
 DownloadProdesFiles(ano = '2012')
 
+# Calculate Deforastation Areas By State in km^2
+source('code/pre/prodes/area_por_estado.R')
+
+CalculateProdesAreas(ano = '2008')
+CalculateProdesAreas(ano = '2010')
+CalculateProdesAreas(ano = '2012')
+
 # Download and Process TerraClass shapefiles
 source('code/pre/terraclass/merge_shapefiles.R')
 
