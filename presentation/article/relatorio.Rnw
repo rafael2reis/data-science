@@ -5,37 +5,65 @@
 \usepackage[backend=bibtex, sorting=none]{biblatex}
 \bibliography{references}
 
-\begin{document}
-\SweaveOpts{concordance=TRUE}
-
 <<setup, include=FALSE, cache=FALSE, echo=FALSE>>=
 Sys.setenv(TEXINPUTS=getwd(),
            BIBINPUTS=getwd(),
            BSTINPUTS=getwd())
 @
 
+\sloppy
+
+\title{Análise de Vegetação Secundária\\ na Amazônia Legal\\ 2008 - 2012}
+\author{ Félix Ribeiro\\ Rafael dos Reis Silva }
+
+\begin{document}
+\SweaveOpts{concordance=TRUE}
+
+\maketitle
+
+\begin{abstract}
+Este trabalho tem como objetivo realizar uma análise descritiva da Vegetação Secundária na Amazônia Legal, entre os anos de 2008, 2010 e 2012, utilizando dados oficiais do governo brasileiro.
+\end{abstract}
+
+\section{Introdução}
+
+Nos últimos 20 anos, a extração de madeira e a expansão da agricultura removeram >328.000 $km^2$ da Amazônia Brasileira - uma área maior do que a Polônia. Apesar das taxas de desmatamento terem diminuído desde 2005, a Amazônia Brasileira continua a perder 7.000 $km^2$ por ano. Além disso, mudanças no Código Florestal Brasileiro podem expor um adicional de 220.000 $km^2$ de floresta a desmatamento legal. Em contraste à maior parte do sul da Amazônia, onde as áreas desmatadas geralmente são utilizadas como pasto por um longo período, na Amazônia oriental e central, é comum que as áreas desmatadas sejam abandonadas após 5 anos sendo utilizadas como pasto para gado. Na Amazônia Brasileira, a área de floresta secundária cresceu de 29.000 para 161.000 $km^2$ entre 1978 e 2002. Essa enorme expansão de floresta secundária se tornará invevitavelmente parte de um plano de preservação, particularmente dado que o seu crescimento a partir de pastos abandonados representa uma maneira significativa de compensar a perda de carbono pelo desflorestamento na Amazônia. \cite{bird_mov_2013}
+
 \section{Data Sets}
 
-Os dados utilizados na análise foram extraídos do PRODES, TerraClass e do Global Forest Watch (GFW), com as especificações técnicas apresentadas abaixo:
+As principais bases de dados utilizadas são provenientes dos projetos PRODES \cite{prodes_website} e TerraClass \cite{prodes_website}, ambos do Instituto Nacional de Pesquisas Espacias (INPE). Foram utilizados também a base \emph{Tree Cover Gain} do \emph{Global Forest Watch} (GFW), as delimitações de estados e municípios do Instituto Brasileiro de Geografia e Estatística (IBGE) \cite{ibge_website}, as malhas de rodovias federais do Deparamento Nacional de Infraestrutura de Transportes (DNIT) \cite{dnit_website} e as áreas de unidades de conservação do Ministério do Meio Ambiente \cite{mma_website}.
 
-\begin{tabular}{|l|l|c|l|}
-\hline
-Origem & Tipo de & Sensor & Resolução \\
- & Satélite & & \\
-\hline
-PRODES & Landsat 5 & TM & 20 a 30m \\
-\hline
-TerraClass & Landsat 5 & TM & 20 a 30m \\
-\hline
-GFW & Landsat 7 & ETM+ & 30 x 30m \\
-\hline
-\end{tabular}
+Com exceção dos dados do GFW, todas as bases são arquivos no formato \emph{shapefile}. Um \emph{shapefile} armazena geometria não-topológica e informações de atributo para as feições espaciais num \emph{data set}. A geometria de uma feição é guardada como um \emph{shape} contendo um conjunto de vetor de coordenadas \cite{shapefile}.
 
-\subsection{O Data Set Tree Cover Gain}
+\subsection{PRODES}
 
-O portal Global Forest Watch disponibiliza uma variedade de dados ??? O conjunto utilizado neste estudo foi o \emph{Tree Cover Gain}. Como informado na documentação dos dados, \emph{tree cover} é definido como toda vegetação com altura maior do que 5 metros. É ainda a presença biofísica de árvores, podendo ser florestas naturais ou plantações ???existing over a range of canopy???
+O Projeto de Monitoramento do Desmatamento na Amazônia Legal por Satélite (PRODES) é um projeto do INPE que utiliza sensoriamento remoto para identificar desmatamentos na Amazônia Legal. O projeto realiza o inventário de perda de floresta primária através do mapeamento da dinâmica do desmatamento por corte raso, que é aquele que resulta na remoção completa da cobertura florestal em um curto intervalo de tempo.
 
-Para a geração dos dados, mais de 600 mil imagens do Landsat 7 foram compiladas e analisadas utilizando uma plataforma na nuvem chamada Google Earth Engine. As observações limpas da superfície (30 por 30 metro por pixel) das imagens de satélite foram reunidas e um algoritmo de aprendizado supervisionado foi aplicado para identificar o tree cover gain por pixel. \cite{dasgupta}
+A base do PRODES está disponível em \cite{prodes_website}, na opção de menu ``Acesso os dados PRODES (mapas e imagens)''. É necessário inserir um endereço de email válido para acessar os dados. Porém, o site não bloqueia o acesso direto às URLs das bases, o que foi imprescindível para a construção do \emph{script} que faz o \emph{download} automático dos dados. Foram utilizadas as bases agrupadas por ano/estado.
+
+\subsection{TerraClass}
+
+O projeto TerraClass, também do INPE, tem como objetivo mapear o uso e cobertura da terra nas áreas desflorestadas da Amazônia Legal, identificadas pelo projeto PRODES. O TerraClass qualifica as regiões desmatadas em doze classes temáticas: agricultura anual, área não observada, área urbana, mineração, mosaico de ocupações, outros, pasto com solo exposto, pasto limpo, pasto sujo, reflorestamento, regeneração com pasto e vegetação secundária. 
+
+Os \emph{shapefiles} do TerraClass são encontrados em \cite{terraclass_website}. Não existe um site genérico para o projeto: o link principal, durante o desenvolvimento deste trabalho, redireciona o usuário para o projeto de 2010. Dali, é possível acessar os projetos de 2008 e 2012. Para cada ano, os dados são disponibilizados por estado/órbita-ponto (do satélite Landsat 5, sensor TM). São necessárias aproximadamente 230 órbitas-ponto para cobrir toda a Amazônia Legal.
+
+\section{Preparação dos Dados}
+
+A maior parte do processamento dos dados deste trabalho foi realiza através de \emph{scripts} na linguagem R, versão 3.2.0 (2015-04-16). Nos casos em que o R se mostrou muito ineficiente no processamento dos \emph{shapefiles}, optou-se pelo sistema de informação geográfica gratuito e \emph{open source} chamado QGIS \cite{qgis}, versão 2.8.1.
+
+\subsection{PRODES}
+
+Para os dados do PRODES, foram criados dois \emph{scripts}: o primeiro, faz o download das bases (data_download.R) e o segundo (area_by_state.R) calcula a área da região desmatada por estado (em $km^2$) e armazena num arquivo txt. Neste último, as informações precisaram ser filtradas, pois os \emph{shapefiles} possuim diversas camadas, além das de desmatamento.
+
+\subsection{TerraClass}
+
+O processamento das bases do TerraClass foi a etapa mais longa deste trabalho, principalmente, por causa da enorme quantidade (mais de 230 \emph{shapefiles} por ano) e tamanho dos arquivos (em média, 100MB por arquivo). Além disso, as bases não possuíam um padrão de nomeclatura que fosse comum a todos os anos do projeto (2008, 2010 e 2012), chegando a existir divergências para um mesmo ano.
+
+Como era proibitivo armazenar toda a base em disco, foi criado um \emph{script} que faz o download de um \emph{shapefile} por órbita-ponto, extrai apenas os polígonos de vegetação secundária, armazena esses polígonos num novo arquivo e apaga o \emph{shapefile} original. Durante este processo, é gerado um \emph{shapefile} por estado, com exceção ao estado do Pará que, por conter muitos polígonos, foi dividido em sete arquivos.
+
+\section{Resultados e Análise}
+
+\section{Conclusão}
 
 \printbibliography
 
