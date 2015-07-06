@@ -9,7 +9,7 @@
 \graphicspath{ {images/} }
 \bibliography{references}
 
-<<setup, include=FALSE, cache=FALSE, echo=FALSE>>=
+<<setup, include=FALSE, cache=FALSE, echo=FALSE, results=hide>>=
 Sys.setenv(TEXINPUTS=getwd(),
            BIBINPUTS=getwd(),
            BSTINPUTS=getwd())
@@ -66,16 +66,33 @@ O processamento das bases do TerraClass foi a etapa mais longa deste trabalho, p
 
 Como era proibitivo armazenar toda a base em disco, foi criado um \emph{script} que faz o download de um \emph{shapefile} por órbita-ponto, extrai apenas os polígonos de vegetação secundária, armazena esses polígonos num novo arquivo e apaga o \emph{shapefile} original. Durante este processo, é gerado um \emph{shapefile} por estado, com exceção ao estado do Pará que, por conter muitos polígonos, foi dividido em sete arquivos.
 
-Cabe observar que as bases de 2008 do TerraClass não estavam separadas por estado. Após executar o script de extração das camadas de vegetação secundária, o QGIS foi utilizado para cortar e unir as camadas, seguindo as delimitações dos estados. Ao final desta estapa, foram gerados nove \emp{shapefiles} para o ano de 2008, um por estado.
+Cabe observar que as bases de 2008 do TerraClass não estavam separadas por estado. Após executar o script de extração das camadas de vegetação secundária, o QGIS foi utilizado para cortar e unir as camadas, seguindo as delimitações dos estados. Ao final desta estapa, foram gerados nove \emph{shapefiles} para o ano de 2008, um por estado.
 
 Após esse processamento, um outro \emph{script} realiza o cálculo das áreas de vegetação secundária e armazena os resultados num arquivo txt por estado/ano.
 
 \subsection{Reprodutibilidade}
 
+Um dos objetivos desta pesquisa era que ela pudesse ser reprodutível. Para isso, foi utilizado o pacote \emph{knitr} do R, que permite a inserção dos \emph{scripts} acima definidos no código \LaTeX{}.
 
+Como os \emph{scripts} de preparação dos dados podem demorar até dias para terminar, foram disponibilizados os arquivos txt com os resultados do processamento. Além disso, foi inserida uma verificação no código, que dispara a preparação dos dados, caso os resultados não sejam encontrados.
 
-<<setup,tidy=F,cache=F,eval=T,echo=F,results='hide'>>= opts_chunk$set(autodep=T)
+Todos os scripts em R, bem como a documentação em \emph{knitr} foi disponibilizada no site de controle de versão Github em \cite{github_sv}. Os arquivos com os \emph{shapefiles} processados, assim como os fontes dos mapas em QGIS, podem ser baixados em \cite{shapefiles_drive}.
 
+Como os arquivos QGIS fazem referência dinâmica aos \emph{shapefiles} fonte, eles podem ser reconstruídos a partir de todo o processamento. Porém, a etapa de separação, corte e união dos arquivos do TerraClass 2008 por estado devem ser feitas através do software. Futuramente, a fim de tornar a pesquisa completamente reproduzível, devem ser criados scripts em Python que executem esta tarefa.
+
+<<dataprep,tidy=F,cache=F,eval=T,echo=F,results=hide>>= opts_chunk$set(autodep=T)
+#print(getwd())
+#setwd('/Users/rafael2reis/workspace/r/VegetacaoSecundaria/')
+
+arquivosTerraClass <- list.files(path = "data/output/terraclass", pattern = paste0(".+\\.txt$"))
+arquivosProdes <- list.files(path = "data/output/prodes", pattern = paste0(".+\\.txt$"))
+arquivosIbge <- list.files(path = "data/output/ibge", pattern = paste0(".+\\.txt$"))
+
+if (length(arquivosTerraClass) == 0 
+    | length(arquivosProdes) == 0
+    | length(arquivosIbge) == 0) {
+  print('Ops!!!')
+}
 @
 
 
@@ -85,7 +102,7 @@ Após esse processamento, um outro \emph{script} realiza o cálculo das áreas d
 
 Na tentativa de buscar uma dinâmica para a Vegetação Secundária, foram gerados alguns mapas a partir dos dados processados.
 
-Inicialmente, com os dados de 2012, sobrepomos o desmatamento com as regiões de vegetação secundária, junto com as delimitações de municípios, na figura \ref{fig:sv_deforestation_2012}. Observamos que, mesmo quando consideramos os dados de apenas um ano (2012), para uma escala que engloba toda a Amazõnia Legal, há muita dificuldade em fazer qualquer tipo de análise. Tentamos reduzir a escala para o nível do estado do Pará, conforme mostrado na figura \ref{sv_deforestation_PA_2012}. Percebemos que as regiões de vegetação começam a ficar mais evidentes, mas ainda existe certa dificuldade de observação. Isso acontece porque, em geral, os polígonos de desmatamento e vegetação são muito pequenos, que acabam diluídos ou desaparecendo quando observados desta distância.
+Inicialmente, com os dados de 2012, sobrepomos o desmatamento com as regiões de vegetação secundária, junto com as delimitações de municípios, na figura \ref{fig:sv_deforestation_2012}. Observamos que, mesmo quando consideramos os dados de apenas um ano (2012), para uma escala que engloba toda a Amazõnia Legal, há muita dificuldade em fazer qualquer tipo de análise. Tentamos reduzir a escala para o nível do estado do Pará, conforme mostrado na figura \ref{fig:sv_deforestation_PA_2012}. Percebemos que as regiões de vegetação começam a ficar mais evidentes, mas ainda existe certa dificuldade de observação. Isso acontece porque, em geral, os polígonos de desmatamento e vegetação são muito pequenos, que acabam diluídos ou desaparecendo quando observados desta distância.
 
 Antes de entrarmos num nível maior de detalhe, vamos agregar algumas informações que poderão ser úteis para a continuação da análise.
 
