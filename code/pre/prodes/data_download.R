@@ -1,15 +1,15 @@
-DownloadProdesFiles <- function(ano = NULL, estados = NULL) {
-  if ( is.null(estados) ) {
-    estados <- c('AC', 'AP', 'AM', 'MA', 'MT', 'PA', 'RO', 'RR', 'TO')
+DownloadProdesFiles <- function(year = NULL, states = NULL) {
+  if ( is.null(states) ) {
+    states <- c('AC', 'AP', 'AM', 'MA', 'MT', 'PA', 'RO', 'RR', 'TO')
   }
   
   wdir <- getwd()
-  setwd( paste0('data/input/prodes/', ano) )
+  setwd( paste0('data/input/prodes/', year) )
   
-  for (i in 1:length(estados)) {
-    estado <- estados[[i]]
-    arquivo.url <- paste0('http://www.dpi.inpe.br/prodesdigital//dadosn/mosaicos/', ano, 
-                          '/PDigital2000_', ano, '_', estado, '_shp.zip')
+  for (i in 1:length(states)) {
+    state <- states[[i]]
+    arquivo.url <- paste0('http://www.dpi.inpe.br/prodesdigital//dadosn/mosaicos/', year, 
+                          '/PDigital2000_', year, '_', state, '_shp.zip')
     
     download.file(arquivo.url, 
                   "dest.zip",
