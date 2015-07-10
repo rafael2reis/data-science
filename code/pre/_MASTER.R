@@ -32,22 +32,29 @@ CalculateProdesAreas(year = '2012')
 source('code/pre/terraclass/merge_shapefiles.R')
 
 # Create Secundary Vegetation Shapes
-CreateTerraClassShapes(ano = '2008')
-CreateTerraClassShapes(ano = '2010')
-CreateTerraClassShapes(ano = '2012')
+CreateTerraClassShapes(year = '2008')
+CreateTerraClassShapes(year = '2010')
+CreateTerraClassShapes(year = '2012')
 
 # Create Non-observed areas Shapes
-CreateTerraClassShapes(ano = '2008', classe = 'AREA_NAO_OBSERVADA', sufix = 'NA')
-CreateTerraClassShapes(ano = '2010', classe = 'AREA_NAO_OBSERVADA', sufix = 'NA')
-CreateTerraClassShapes(ano = '2012', classe = 'AREA_NAO_OBSERVADA', sufix = 'NA')
+CreateTerraClassShapes(year = '2008', classe = 'AREA_NAO_OBSERVADA', sufix = 'NA')
+CreateTerraClassShapes(year = '2010', classe = 'AREA_NAO_OBSERVADA', sufix = 'NA')
+CreateTerraClassShapes(year = '2012', classe = 'AREA_NAO_OBSERVADA', sufix = 'NA')
 
 # Calculate Secondary Vegetation areas by States
 source('code/pre/terraclass/area.R')
 
-CalculateArea(ano = '2008')
-CalculateArea(ano = '2010')
-CalculateArea(ano = '2012')
+CalculateArea(year = '2008')
+CalculateArea(year = '2010')
+CalculateArea(year = '2012')
 
 # Calculate Not Observable Area
-CalculateArea(ano = '2010', prefix = 'NA')
-CalculateArea(ano = '2012', prefix = 'NA')
+CalculateArea(year = '2010', prefix = 'NA')
+CalculateArea(year = '2012', prefix = 'NA')
+
+# List areas
+source('code/pre/terraclass/list_area.R')
+
+ListArea(year = '2008')
+ListArea(year = '2010')
+ListArea(year = '2012')

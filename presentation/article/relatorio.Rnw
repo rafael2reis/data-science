@@ -6,6 +6,7 @@
 \usepackage{mathtools}
 \usepackage{graphicx}
 \usepackage{float}
+\usepackage{hyperref}
 \graphicspath{ {images/} }
 \bibliography{references}
 
@@ -14,6 +15,16 @@ Sys.setenv(TEXINPUTS=getwd(),
            BIBINPUTS=getwd(),
            BSTINPUTS=getwd())
 @
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    pdftitle={Sharelatex Example},
+    bookmarks=true,
+    pdfpagemode=FullScreen,
+}
 
 \sloppy
 
@@ -27,22 +38,34 @@ Sys.setenv(TEXINPUTS=getwd(),
 \maketitle
 
 \begin{abstract}
-Este trabalho tem como objetivo realizar uma análise descritiva da Vegetação Secundária na Amazônia Legal, entre os anos de 2008, 2010 e 2012, utilizando dados oficiais do governo brasileiro.
+Este trabalho tem como objetivo realizar uma análise descritiva da Vegetação Secundária na Amazônia Legal, entre os anos de 2008, 2010 e 2012, utilizando dados oficiais do governo brasileiro. Foram desenvolvidos \emph{scripts} que processaram esses dados, de maneira a tornar a pesquisa reprodutível. Foi constatado que a vegetação secundária não segue uma dinâmica comum para toda a Amazônia Legal. Porém, o resultado deste trabalho oferece material para análises mais detalhadas.
 \end{abstract}
 
 \section{Introdução}
 
-Nos últimos 20 anos, a extração de madeira e a expansão da agricultura removeram >328.000 $km^2$ da Amazônia Brasileira - uma área maior do que a Polônia. Apesar das taxas de desmatamento terem diminuído desde 2005, a Amazônia Brasileira continua a perder 7.000 $km^2$ por ano. Além disso, mudanças no Código Florestal Brasileiro podem expor um adicional de 220.000 $km^2$ de floresta a desmatamento legal. Em contraste à maior parte do sul da Amazônia, onde as áreas desmatadas geralmente são utilizadas como pasto por um longo período, na Amazônia oriental e central, é comum que as áreas desmatadas sejam abandonadas após 5 anos sendo utilizadas como pasto para gado. Na Amazônia Brasileira, a área de floresta secundária cresceu de 29.000 para 161.000 $km^2$ entre 1978 e 2002. Essa enorme expansão de floresta secundária se tornará invevitavelmente parte de um plano de preservação, particularmente dado que o seu crescimento a partir de pastos abandonados representa uma maneira significativa de compensar a perda de carbono pelo desflorestamento na Amazônia. \cite{bird_mov_2013}
+Segundo resolução do Conselho Nacional do Meio Ambiente (CONAMA), vegetação secundária é aquela resultante de processos naturais de sucessão, após supressão total ou parcial de vegetação primária por ações antrópicas ou causas naturais, podendo ocorrer árvores remanescentes de vegetação primária \cite{conama}. Como a vegetação secundária está diretamente vinculada ao desmatamento, para este trabalho, é importante entender a situação atual deste fenômeno na Amazônia.
 
-\section{Data Sets}
+Segundo \cite{bird_mov_2013}, nos últimos 20 anos, a extração de madeira e a expansão da agricultura removeram >328.000 $km^2$ da Amazônia Brasileira - uma área maior do que a Polônia. Apesar das taxas de desmatamento terem diminuído desde 2005, a Amazônia Brasileira continua a perder 7.000 $km^2$ por ano. Além disso, mudanças no Código Florestal Brasileiro podem expor um adicional de 220.000 $km^2$ de floresta a desmatamento legal.
 
-As principais bases de dados utilizadas são provenientes dos projetos PRODES \cite{prodes_website} e TerraClass \cite{prodes_website}, ambos do Instituto Nacional de Pesquisas Espacias (INPE). Foram utilizados também a base \emph{Tree Cover Gain} do \emph{Global Forest Watch} (GFW), as delimitações de estados e municípios do Instituto Brasileiro de Geografia e Estatística (IBGE) \cite{ibge_website}, as malhas de rodovias federais do Deparamento Nacional de Infraestrutura de Transportes (DNIT) \cite{dnit_website} e as áreas de unidades de conservação do Ministério do Meio Ambiente \cite{mma_website}.
+Em contraste à maior parte do sul da Amazônia, onde as áreas desmatadas geralmente são utilizadas como pasto por um longo período, na Amazônia oriental e central, é comum que as áreas desmatadas sejam abandonadas após 5 anos sendo utilizadas como pasto para gado. 
 
-Com exceção dos dados do GFW, todas as bases são arquivos no formato \emph{shapefile}. Um \emph{shapefile} armazena geometria não-topológica e informações de atributo para as feições espaciais num \emph{data set}. A geometria de uma feição é guardada como um \emph{shape} contendo um conjunto de vetor de coordenadas \cite{shapefile}.
+Na Amazônia Brasileira, a área de floresta secundária cresceu de 29.000 para 161.000 $km^2$ entre 1978 e 2002. Essa enorme expansão de floresta secundária se tornará invevitavelmente parte de um plano de preservação, particularmente dado que o seu crescimento a partir de pastos abandonados representa uma maneira significativa de compensar a perda de carbono pelo desflorestamento na Amazônia.
+
+Este trabalho procura investigar se existe alguma dinâmica no surgimento de vegetação secundária nas áreas identificadas como desmatadas na Amazônia Legal, a partir de dados oficiais do governo brasileiro. Estes dados foram processados e informações sobre a vegetação foram extraídas e combinadas com outras bases de dados, a fim de realizar a análise.
+
+O trabalho está dividido nas seguintes partes: na seção \ref{datasets} são apresentadas as bases de dados utilizadas; na seção \ref{preparacao}, são descritos os processamentos realizados nas bases e de que forma este trabalho pode ser reproduzido; a seção \ref{resultados} mostra os resultados obtidos; por fim, na seção \ref{conclusao} são apresentadas as conclusões.
+
+\section{Bases de Dados}
+\label{datasets}
+As principais bases de dados utilizadas são provenientes dos projetos PRODES \cite{prodes_website} e TerraClass \cite{prodes_website}, ambos do Instituto Nacional de Pesquisas Espacias (INPE). Foram utilizadas também as delimitações de estados e municípios do Instituto Brasileiro de Geografia e Estatística (IBGE) \cite{ibge_website} e as malhas de rodovias federais do Deparamento Nacional de Infraestrutura de Transportes (DNIT) \cite{dnit_website}.
+
+Todas as bases são arquivos no formato \emph{shapefile}. Um \emph{shapefile} armazena geometria não-topológica e informações de atributo para as feições espaciais num \emph{dataset}. A geometria de uma feição é guardada como um \emph{shape} contendo um conjunto de vetor de coordenadas \cite{shapefile}.
 
 \subsection{PRODES}
 
-O Projeto de Monitoramento do Desmatamento na Amazônia Legal por Satélite (PRODES) é um projeto do INPE que utiliza sensoriamento remoto para identificar desmatamentos na Amazônia Legal. O projeto realiza o inventário de perda de floresta primária através do mapeamento da dinâmica do desmatamento por corte raso, que é aquele que resulta na remoção completa da cobertura florestal em um curto intervalo de tempo.
+O Projeto de Monitoramento do Desmatamento na Amazônia Legal por Satélite (PRODES) é um projeto do INPE que utiliza sensoriamento remoto para identificar desmatamentos na Amazônia Legal. O projeto realiza o inventário de perda de floresta primária através do mapeamento da dinâmica do desmatamento por corte raso, que é aquele resultante da remoção completa da cobertura florestal em um curto intervalo de tempo.
+
+Os dados do PRODES são cumulativos desde o ano de 2002. Por exemplo, para o ano de 2008, são considerados todos os polígonos de desmatamento identificados desde 2002 até 2008, inclusive. Além disso, o projeto não analisa regiões que já foram classificadas como desmatadas nos anos anteriores.
 
 A base do PRODES está disponível em \cite{prodes_website}, na opção de menu ``Acesso os dados PRODES (mapas e imagens)''. É necessário inserir um endereço de email válido para acessar os dados. Porém, o site não bloqueia o acesso direto às URLs das bases, o que foi imprescindível para a construção do \emph{script} que faz o \emph{download} automático dos dados. Foram utilizadas as bases agrupadas por ano/estado.
 
@@ -53,7 +76,7 @@ O projeto TerraClass, também do INPE, tem como objetivo mapear o uso e cobertur
 Os \emph{shapefiles} do TerraClass são encontrados em \cite{terraclass_website}. Não existe um site genérico para o projeto: o link principal, durante o desenvolvimento deste trabalho, redireciona o usuário para o projeto de 2010. Dali, é possível acessar os projetos de 2008 e 2012. Para cada ano, os dados são disponibilizados por estado/órbita-ponto (do satélite Landsat 5, sensor TM). São necessárias aproximadamente 230 órbitas-ponto para cobrir toda a Amazônia Legal.
 
 \section{Preparação dos Dados}
-
+\label{preparacao}
 A maior parte do processamento dos dados deste trabalho foi realiza através de \emph{scripts} na linguagem R, versão 3.2.0 (2015-04-16). Nos casos em que o R se mostrou ineficiente no processamento dos \emph{shapefiles}, foi utilizado o QGIS \cite{qgis} (versão 2.8.1), que é um sistema de informação geográfica gratuito e \emph{open source}.
 
 \subsection{PRODES}
@@ -68,79 +91,293 @@ Como era proibitivo armazenar toda a base em disco, foi criado um \emph{script} 
 
 Cabe observar que as bases de 2008 do TerraClass não estavam separadas por estado. Após executar o script de extração das camadas de vegetação secundária, o QGIS foi utilizado para cortar e unir as camadas, seguindo as delimitações dos estados. Ao final desta estapa, foram gerados nove \emph{shapefiles} para o ano de 2008, um por estado.
 
-Após esse processamento, um outro \emph{script} realiza o cálculo das áreas de vegetação secundária e armazena os resultados num arquivo txt por estado/ano.
+Por fim, assim como no caso dos dados do PRODES, um outro \emph{script} foi criado para realizar o cálculo das áreas de vegetação secundária e armazenar os resultados num arquivo txt por estado/ano.
 
 \subsection{Reprodutibilidade}
 
-Um dos objetivos desta pesquisa era que ela pudesse ser reprodutível. Para isso, foi utilizado o pacote \emph{knitr} do R, que permite a inserção dos \emph{scripts} acima definidos no código \LaTeX{}.
+Esta pesquisa tinha como um dos objetivos ser reprodutível. Para isso, foi utilizado o pacote \emph{knitr} do R, que permite a inserção de \emph{scripts} R no código \LaTeX{}.
 
-Como os \emph{scripts} de preparação dos dados podem demorar até dias para terminar, foram disponibilizados os arquivos txt com os resultados do processamento. Além disso, foi inserida uma verificação no código, que dispara a preparação dos dados, caso os resultados não sejam encontrados.
+Como os \emph{scripts} de preparação dos dados podem demorar até dias para terminar, foram disponibilizados os arquivos txt com os resultados do processamento. Estes arquivos são utilizados para gerar os gráficos deste documento. Além disso, foi disponibilizado um \emph{script} em  \verb|code/pre/_MASTER.R| que realiza esta tarefa. Atenção: esse código pode demorar alguns dias para completar a sua executação.
 
-Todos os scripts em R, bem como a documentação em \emph{knitr} foi disponibilizada no site de controle de versão Github em \cite{github_sv}. Os arquivos com os \emph{shapefiles} processados, assim como os fontes dos mapas em QGIS, podem ser baixados em \cite{shapefiles_drive}.
+Todos os scripts em R, bem como a documentação em \emph{knitr} foi disponibilizada no site de controle de versão Github e podem ser acessados através \href{https://github.com/rafael2reis/data-science}{deste link}. Os arquivos com os \emph{shapefiles} processados, assim como os fontes dos mapas em QGIS, podem ser baixados \href{https://drive.google.com/folderview?id=0B4AQ68Z6PCvIflBONldXNE0zbnVVV2hhT1A1NUg0SVJBT01hWmFrMWpfbEIycC1sTDBueWs&usp=sharing}{aqui}.
 
-Como os arquivos QGIS fazem referência dinâmica aos \emph{shapefiles} fonte, eles podem ser reconstruídos a partir de todo o processamento. Porém, a etapa de separação, corte e união dos arquivos do TerraClass 2008 por estado devem ser feitas através do software. Futuramente, a fim de tornar a pesquisa completamente reproduzível, devem ser criados scripts em Python que executem esta tarefa.
-
-<<dataprep,tidy=F,cache=F,eval=T,echo=F,results=hide>>= opts_chunk$set(autodep=T)
-#print(getwd())
-#setwd('/Users/rafael2reis/workspace/r/VegetacaoSecundaria/')
-
-arquivosTerraClass <- list.files(path = "data/output/terraclass", pattern = paste0(".+\\.txt$"))
-arquivosProdes <- list.files(path = "data/output/prodes", pattern = paste0(".+\\.txt$"))
-arquivosIbge <- list.files(path = "data/output/ibge", pattern = paste0(".+\\.txt$"))
-
-if (length(arquivosTerraClass) == 0 
-    | length(arquivosProdes) == 0
-    | length(arquivosIbge) == 0) {
-  print('Ops!!!')
-}
-@
-
+Como os arquivos QGIS fazem referência dinâmica aos \emph{shapefiles} fonte, eles podem ser reconstruídos a partir de todo o processamento. Porém, a etapa de separação, corte e união dos arquivos do TerraClass 2008 por estado devem ser feitas através do software. Futuramente, a fim de tornar a pesquisa completamente reprodutível, devem ser criados scripts em Python que executem esta tarefa.
 
 \section{Resultados e Análise}
+\label{resultados}
+<<dataprep,tidy=F,cache=F,eval=T,echo=F,results=hide>>= opts_chunk$set(autodep=T)
+require(ggplot2); library(scales)
+
+# TerraClass
+terra.class.2012 <- read.table('../../data/output/terraclass/terraclass_SV_2012.txt', stringsAsFactors = FALSE)
+names(terra.class.2012) <- c('uf', 'ano', 'area')
+terra.class.2012$classe <- 'SV 2012'
+
+terra.class.na.2012 <- read.table('../../data/output/terraclass/terraclass_NA_2012.txt', stringsAsFactors = FALSE)
+names(terra.class.na.2012) <- c('uf', 'ano', 'area')
+terra.class.na.2012$classe <- 'SV NA 2012'
+
+terra.class.2010 <- read.table('../../data/output/terraclass/terraclass_SV_2010.txt', stringsAsFactors = FALSE)
+names(terra.class.2010) <- c('uf', 'ano', 'area')
+terra.class.2010$classe <- 'SV 2010'
+
+terra.class.na.2010 <- read.table('../../data/output/terraclass/terraclass_NA_2010.txt', stringsAsFactors = FALSE)
+names(terra.class.na.2010) <- c('uf', 'ano', 'area')
+terra.class.na.2010$classe <- 'SV NA 2010'
+
+terra.class.2008 <- read.table('../../data/output/terraclass/terraclass_SV_2008.txt', stringsAsFactors = FALSE)
+names(terra.class.2008) <- c('uf', 'ano', 'area')
+terra.class.2008$classe <- 'SV 2008'
+
+# PRODES
+prodes.2012 <- read.table('../../data/output/prodes/prodes_2012.txt', stringsAsFactors = FALSE)
+names(prodes.2012) <- c('uf', 'ano', 'area')
+prodes.2012$classe <- 'Deforestation 2012'
+
+prodes.2010 <- read.table('../../data/output/prodes/prodes_2010.txt', stringsAsFactors = FALSE)
+names(prodes.2010) <- c('uf', 'ano', 'area')
+prodes.2010$classe <- 'Deforestation 2010'
+
+prodes.2008 <- read.table('../../data/output/prodes/prodes_2008.txt', stringsAsFactors = FALSE)
+names(prodes.2008) <- c('uf', 'ano', 'area')
+prodes.2008$classe <- 'Deforestation 2008'
+
+# Estados
+ibge <- read.table('../../data/output/ibge/ibge.txt', stringsAsFactors = FALSE)
+names(ibge) <- c('uf', 'area.total')
+
+
+@
+
+Inicialmente, analisamos as áreas das regiões de desmatamento e vegetação secundária para os anos de 2010 e 2012, exibidas no gráfico \ref{fig:grafico_2010_2012}.
+
+\begin{figure}[H]
+\begin{center}
+<<fig = T, echo = F, width = 7, height = 4>>=
+# Merge TerraClass com Desmatamento
+resumo.2012 <- rbind(terra.class.2012, prodes.2012)
+resumo.2012 <- merge.data.frame(resumo.2012, ibge)
+resumo.2012$ano <- as.factor(resumo.2012$ano)
+resumo.2012$classe <- as.factor(resumo.2012$classe)
+resumo.2012$uf <- as.factor(resumo.2012$uf)
+resumo.2012 <- transform(resumo.2012, 
+                    classe.ord  = factor(
+                      classe,
+                      levels=c('SV 2012','Deforestation 2012'),
+                      ordered =TRUE))
+
+resumo.2010 <- rbind(terra.class.2010, prodes.2010)
+resumo.2010 <- merge.data.frame(resumo.2010, ibge)
+resumo.2010$ano <- as.factor(resumo.2010$ano)
+resumo.2010$classe <- as.factor(resumo.2010$classe)
+resumo.2010$uf <- as.factor(resumo.2010$uf)
+resumo.2010 <- transform(resumo.2010, 
+                         classe.ord  = factor(
+                           classe,
+                           levels=c('SV 2010','Deforestation 2010'),
+                           ordered =TRUE))
+
+resumo.2010.2012 <- rbind(resumo.2012, resumo.2010)
+resumo <- transform(resumo.2010.2012, 
+                         classe.ord  = factor(
+                           classe,
+                           levels=c('SV 2010', 'SV 2012', 'Deforestation 2010', 'Deforestation 2012'),
+                           ordered =TRUE))
+
+cols <- c("SV 2010" = "#14AA0A", 
+          "Deforestation 2010" = "#AA2414", 
+          "SV 2012" = "#0D6A06",
+          "Deforestation 2012" = "#6A160C") 
+
+ggplot(data = resumo, aes(x = uf, y = area,
+                               order = classe.ord,
+                               fill=classe)) +
+  geom_bar(stat="identity", position=position_dodge()) +
+  labs(title = "Deforestation and Secondary Vegetation", x = "State", y = expression(Area~~"("*km^"2"*")")) +
+  scale_fill_manual(values = cols, name = "Class") +
+  scale_y_continuous(labels = comma)
+@
+\end{center}
+\caption{Desmatamento e Vegetação Secundária: 2010 e 2012}
+\label{fig:grafico_2010_2012}
+\end{figure}
+
+Percebemos que, em geral, o desmatamento aumenta de um ano para o outro e que a vegetação secundária acompanha esse crescimento. Porém, no estado do Pará há uma queda expressiva de vegetação secundária. Para entender o que aconteceu, plotamos apenas a vegetação e as áreas das regiões não observadas para esses anos na figura \ref{fig:na_2010_2012}.
+
+\begin{figure}[H]
+\begin{center}
+<<fig = T, width = 7, height = 4, echo = F>>=
+# Merge TerraClass com Desmatamento
+resumo.2012 <- terra.class.2012
+resumo.2012 <- rbind(resumo.2012, terra.class.2012, terra.class.na.2012)
+resumo.2012 <- merge.data.frame(resumo.2012, ibge)
+resumo.2012$ano <- as.factor(resumo.2012$ano)
+resumo.2012$classe <- as.factor(resumo.2012$classe)
+resumo.2012$uf <- as.factor(resumo.2012$uf)
+resumo.2012 <- transform(resumo.2012, 
+                    classe.ord  = factor(
+                      classe,
+                      levels=c('SV 2012'),
+                      ordered =TRUE))
+
+resumo.2010 <- terra.class.2010
+resumo.2010 <- rbind(resumo.2010, terra.class.na.2010)
+resumo.2010 <- merge.data.frame(resumo.2010, ibge)
+resumo.2010$ano <- as.factor(resumo.2010$ano)
+resumo.2010$classe <- as.factor(resumo.2010$classe)
+resumo.2010$uf <- as.factor(resumo.2010$uf)
+resumo.2010 <- transform(resumo.2010, 
+                         classe.ord  = factor(
+                           classe,
+                           levels=c('SV 2010'),
+                           ordered =TRUE))
+
+resumo.2010.2012 <- rbind(resumo.2012, resumo.2010)
+resumo <- transform(resumo.2010.2012, 
+                         classe.ord  = factor(
+                           classe,
+                           levels=c('SV 2010', 'SV 2012', 'SV NA 2010', 'SV NA 2012'),
+                           ordered =TRUE))
+
+cols <- c("SV 2010" = "#14AA0A", 
+          "SV 2012" = "#0D6A06",
+          "SV NA 2010" = "#ffff33",
+          "SV NA 2012" = "#999933") 
+
+ggplot(data = resumo, aes(x = uf, y = area,
+                               order = classe.ord,
+                               fill=classe)) +
+  geom_bar(stat="identity", position=position_dodge()) +
+  labs(title = "Secondary Vegetation", x = "State", y = expression(Area~~"("*km^"2"*")")) +
+  scale_fill_manual(values = cols, name = "Class") +
+  scale_y_continuous(labels = comma)
+@
+\end{center}
+\caption{Desmatamento, Vegetação Secundária e Área Não Observada: 2010 e 2012}
+\label{fig:na_2010_2012}
+\end{figure}
+
+Fica claro que o Pará, neste período, teve uma grande quantidade de áreas não observadas que não podem ser ignoradas. Mesmo que toda essa região fosse classificada como vegetação secundária, o padrão de queda não se manteria. Podemos concluir que a vegetação no Pará seguiu a tendência das outras regiões, com um certo crescimento. O mesmo argumento pode ser utilizado para constatar esse comportamento no Mato Grosso.
+
+Acrescentando os dados de 2008, temos o gráfico da figura \ref{fig:grafico_resumo}.
+
+\begin{figure}[H]
+\begin{center}
+<<fig = T, width = 7, height = 4, echo = F>>=
+# Merge TerraClass com Desmatamento
+resumo.2012 <- rbind(terra.class.2012, prodes.2012)
+resumo.2012 <- rbind(resumo.2012, terra.class.2012, terra.class.na.2012)
+resumo.2012 <- merge.data.frame(resumo.2012, ibge)
+resumo.2012$ano <- as.factor(resumo.2012$ano)
+resumo.2012$classe <- as.factor(resumo.2012$classe)
+resumo.2012$uf <- as.factor(resumo.2012$uf)
+resumo.2012 <- transform(resumo.2012, 
+                    classe.ord  = factor(
+                      classe,
+                      levels=c('SV 2012','Deforestation 2012'),
+                      ordered =TRUE))
+
+resumo.2010 <- rbind(terra.class.2010, prodes.2010)
+resumo.2010 <- rbind(resumo.2010, terra.class.na.2010)
+resumo.2010 <- merge.data.frame(resumo.2010, ibge)
+resumo.2010$ano <- as.factor(resumo.2010$ano)
+resumo.2010$classe <- as.factor(resumo.2010$classe)
+resumo.2010$uf <- as.factor(resumo.2010$uf)
+resumo.2010 <- transform(resumo.2010, 
+                         classe.ord  = factor(
+                           classe,
+                           levels=c('SV 2010','Deforestation 2010'),
+                           ordered =TRUE))
+
+resumo.2008 <- rbind(terra.class.2008, prodes.2008)
+resumo.2008 <- merge.data.frame(resumo.2008, ibge)
+resumo.2008$ano <- as.factor(resumo.2008$ano)
+resumo.2008$classe <- as.factor(resumo.2008$classe)
+resumo.2008$uf <- as.factor(resumo.2008$uf)
+resumo.2008 <- transform(resumo.2008, 
+                         classe.ord  = factor(
+                           classe,
+                           levels=c('SV 2008','Deforestation 2008'),
+                           ordered =TRUE))
+
+resumo.2010.2012 <- rbind(resumo.2012, resumo.2010)
+resumo <- rbind(resumo.2010.2012, resumo.2008)
+resumo <- transform(resumo, 
+                         classe.ord  = factor(
+                           classe,
+                           levels=c('SV 2008', 'SV 2010', 'SV 2012', 'SV NA 2010', 'SV NA 2012', 'Deforestation 2008', 'Deforestation 2010', 'Deforestation 2012'),
+                           ordered =TRUE))
+
+cols <- c("SV 2010" = "#14AA0A", 
+          "Deforestation 2010" = "#AA2414", 
+          "SV 2012" = "#0D6A06",
+          "SV 2008" = "#1CEA0E",
+          "Deforestation 2012" = "#6A160C",
+          "Deforestation 2008" = "#EA311B",
+          "SV NA 2010" = "#ffff33",
+          "SV NA 2012" = "#999933") 
+
+ggplot(data = resumo, aes(x = uf, y = area,
+                               order = classe.ord,
+                               fill=classe)) +
+  geom_bar(stat="identity", position=position_dodge()) +
+  labs(title = "Deforestation and Secondary Vegetation", x = "State", y = expression(Area~~"("*km^"2"*")")) +
+  scale_fill_manual(values = cols, name = "Class") +
+  scale_y_continuous(labels = comma)
+@
+\end{center}
+\caption{Desmatamento, Vegetação Secundária e Área Não Observada}
+\label{fig:grafico_resumo}
+\end{figure}
+
+Os dados de 2008 mostram que houve uma queda de vegetação secundária entre os anos de 2008 e 2010, principalmente nos estados do Pará e do Amazonas.
 
 \subsection{Mapas}
 
 Na tentativa de buscar uma dinâmica para a Vegetação Secundária, foram gerados alguns mapas a partir dos dados processados.
 
-Inicialmente, com os dados de 2012, sobrepomos o desmatamento com as regiões de vegetação secundária, junto com as delimitações de municípios, na figura \ref{fig:sv_deforestation_2012}. Observamos que, mesmo quando consideramos os dados de apenas um ano (2012), para uma escala que engloba toda a Amazõnia Legal, há muita dificuldade em fazer qualquer tipo de análise. Tentamos reduzir a escala para o nível do estado do Pará, conforme mostrado na figura \ref{fig:sv_deforestation_PA_2012}. Percebemos que as regiões de vegetação começam a ficar mais evidentes, mas ainda existe certa dificuldade de observação. Isso acontece porque, em geral, os polígonos de desmatamento e vegetação são muito pequenos, que acabam diluídos ou desaparecendo quando observados desta distância.
+Inicialmente, com os dados de 2012, sobrepomos o desmatamento com as regiões de vegetação secundária, junto com as delimitações de municípios, na figura \ref{fig:sv_deforestation_2012}.
 
-Antes de entrarmos num nível maior de detalhe, vamos agregar algumas informações que poderão ser úteis para a continuação da análise.
-
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=1\textwidth]{sv_deforestation_2012}
     \caption{Desmatamento e Vegetação Secundária: 2012}
     \label{fig:sv_deforestation_2012}
 \end{figure}
 
-\begin{figure}[h]
+Observamos que, mesmo quando consideramos os dados de apenas um ano (2012), para uma escala que engloba toda a Amazõnia Legal, há muita dificuldade em fazer qualquer tipo de análise. Tentamos reduzir a escala para o nível do estado do Pará, conforme mostrado na figura \ref{fig:sv_deforestation_PA_2012}.
+\begin{figure}[H]
     \centering
     \includegraphics[width=1\textwidth]{sv_deforestation_PA_2012}
     \caption{Pará: Desmatamento e Vegetação Secundária: 2012}
     \label{fig:sv_deforestation_PA_2012}
 \end{figure}
 
-Como a vegetação secundária surge a partir de áreas já desmatadas, para ilustrar, analisamos o desmatamento entre os anos 2002 e 2012 na figura \ref{fig:deforestation_2012}.
+Percebemos que as regiões de vegetação começam a ficar mais evidentes, com tendência a aparecer perto dos rios, mas ainda existe certa dificuldade de observação. Isso acontece porque, em geral, os polígonos de desmatamento e vegetação são muito pequenos, e acabam diluídos ou desaparecendo quando observados desta distância.
 
-\begin{figure}[h]
+Antes de entrarmos num nível maior de detalhe, vamos agregar algumas informações que poderão ser úteis para a continuação da análise. Como a vegetação secundária surge a partir de áreas já desmatadas, para ilustrar, analisamos o desmatamento entre os anos 2002 e 2012 na figura \ref{fig:deforestation_2012}.
+
+\begin{figure}[H]
     \centering
     \includegraphics[width=1\textwidth]{deforestation_2002_2012}
     \caption{Desmatamento de 2002 até 2012}
     \label{fig:deforestation_2012}
 \end{figure}
 
-Estradas são importantes condutoras de desmatamento \cite{nelson1997roads} \cite{geist2002proximate}. Agregando esta informação na análise, inserimos as rodovias federais no mapa \ref{fig:deforestation_roads_2012}. Fica claro que a maior parte do desmatamento acompanha o curso das rodovias.
+É constatado que estradas são importantes condutoras de desmatamento \cite{nelson1997roads} \cite{geist2002proximate}. Agregando esta informação na análise, inserimos as rodovias federais no mapa \ref{fig:deforestation_roads_2012}.
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=1\textwidth]{deforestation_roads_2012}
     \caption{Desmatamento e Rodovias Federais: 2012}
     \label{fig:deforestation_roads_2012}
 \end{figure}
 
-A seguir, investigamos se a vegetação secundária também aparece predominantemente no curso das estradas. Visualizando os dados de 2008, 2010 e 2012, obtemos o mapa da figura \ref{fig:sv_deforestation_2008_2010_2012}. Mesmo seguindo as recomendações para a coloração de mapas de \cite{colorbrewer}, como dito acima, essa escala dificulta a análise. Geramos o mapa com a expectativa de que seja útil para identificar regiões de investigações mais detalhadas.
+Fica claro que a maior parte do desmatamento acompanha o curso das rodovias. A seguir, investigamos se a vegetação secundária também aparece predominantemente no curso das estradas.
 
-\begin{figure}[h]
+Visualizando os dados de 2008, 2010 e 2012, obtemos o mapa da figura \ref{fig:sv_deforestation_2008_2010_2012}. Mesmo seguindo as recomendações para a coloração de mapas de \cite{colorbrewer}, como dito acima, essa escala dificulta a análise. Geramos o mapa com a expectativa de que seja útil para identificar regiões de investigações mais detalhadas.
+
+\begin{figure}[H]
     \centering
     \includegraphics[width=1\textwidth]{sv_deforestation_2008_2010_2012}
     \caption{Desmatamento e Vegetação Secundária}
@@ -149,23 +386,23 @@ A seguir, investigamos se a vegetação secundária também aparece predominante
 
 O próximo passo é aproximar a região para o nível de estado e, se ainda assim não ficar claro as distinções de vegetação por ano, aproximarmos até um nível aceitável de diferenciação. Começamos com a figura \ref{fig:sv_deforestation_2008_2010_2012}, na qual é representado o estado do Acre. Pelo mapa, percebemos que a vegetação secundária em sua maioria, não acompanha as rodovias, mas há uma expressiva incidência nas margens dos rios.
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=1\textwidth]{sv_deforestation_AC_2008_2010_2012}
     \caption{Acre: Desmatamento e Vegetação Secundária}
     \label{fig:sv_deforestation_AC_2008_2010_2012}
 \end{figure}
 
-Geramos, então, dois mapas, \ref{fig:sv_deforestation_AC_z2_2008_2010_2012} e \ref{fig:sv_deforestation_AC_zoom_2008_2010_2012}, com maior nível de detalhe para duas regiões diferentes do estado do Acre. Com a escala escolhida, podemos abservar comportamentos comuns aos dois mapas: confirmamos que a vegetação não segue o curso das rodovias e percebemos que, embora o surgimento de vegetação secundária seja pouco no ano de 2010, no ano de 2012 este surgimento é quase nulo.
+Geramos, então, dois mapas, \ref{fig:sv_deforestation_AC_z2_2008_2010_2012} e \ref{fig:sv_deforestation_AC_zoom_2008_2010_2012}, com maior nível de detalhe para duas regiões diferentes do estado do Acre. Com a escala escolhida, podemos observar comportamentos comuns aos dois mapas: confirmamos que a vegetação não segue o curso das rodovias e percebemos que, embora o surgimento de vegetação secundária seja pouco no ano de 2010, no ano de 2012 este surgimento é quase nulo.
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=1\textwidth]{sv_deforestation_AC_z2_2008_2010_2012}
     \caption{Acre: Desmatamento e Vegetação Secundária}
     \label{fig:sv_deforestation_AC_z2_2008_2010_2012}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=1\textwidth]{sv_deforestation_AC_zoom_2008_2010_2012}
     \caption{Acre: Desmatamento e Vegetação Secundária}
@@ -173,6 +410,15 @@ Geramos, então, dois mapas, \ref{fig:sv_deforestation_AC_z2_2008_2010_2012} e \
 \end{figure}
 
 \section{Conclusão}
+\label{conclusao}
+
+Este trabalho procurou realizar uma análise descritiva da vegetação secundária na Amazônia Legal. Foi constatado que, diferente do desmatamento, o surgimento de vegetação secundária não acompanha o curso das estradas. Foi observado que há uma certa tendência de surgimento desta vegetação em regiões próximas aos rios.
+
+Nas regiões observadas do Acre, embora seja possível perceber o surgimento de polígonos de vegetação entre 2008 e 2010, é quase inexistente o surgimento de polígonos entre 2010 e 2012.
+
+Não foi identificado nenhum padrão que pudesse explicar qualquer dinâmica de vegetação secundária para toda a Amazônia Legal. Por ser uma área que corresponde a 59\% do território brasileiro, é inerente a dificuldade da tarefa, visto que engloba diversas regiões com suas diferenças econômicas, sociais e políticas.
+
+Para trabalhos futuros, pode-se realizar uma análise \emph{bottom-up} do surgimento da vegetação secundária, começando por áreas menores, até englobar toda a região. Também podem ser agregados outros dados, como as informações de terras protegidas.
 
 \printbibliography
 
